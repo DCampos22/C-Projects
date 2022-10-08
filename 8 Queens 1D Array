@@ -1,0 +1,53 @@
+//Program finds where to place 8 queens in a chess board using a one-dimensional array
+
+#include <iostream>
+#include <cmath>
+using namespace std;
+int main() {
+ int q[8], c = 0; // begin at column 0
+ int solutions = 0; // we have not yet found any solutions
+ //put the queen in the upper left square
+ q[0] = 0; //b[0][0] = 1 in 2D version
+nc: c++;
+ // if we reach column 8, we have a solution (i.e. print)
+ if(c == 8) goto print;
+ q[c] = -1;
+
+nr: q[c]++;
+ // if we reach row 8, we must backtrack
+ if(q[c] == 8) goto backtrack;
+ // include row and diagonal tests here
+ // this can be done with seperate loops or one for loop
+ for (int i = 0; i < c; i++){
+ if((q[i] == q[c]) || (c - i) == abs(q[c]- q[i])) goto nr;
+ }
+ // if we pass our tests, we can move to the next column
+ goto nc;
+backtrack:
+ c--;
+ // check to see if we've reached column -1
+ if(c == -1) return 0;
+ // if we have, we found all solutions
+ // if we still have solutions to find, go to the next row
+ goto nr;
+print:
+ solutions++;
+ cout << "Solution " << solutions << ":\n";
+ for (int i = 0; i < 8; i++){
+ for (int j = 0; j < 8; j++){
+ // if array row of q[i] is equal to the slot j in the column print a 1 indicating a queen/solution.
+ if(q[j] == i){
+ cout << 1;
+ }
+ // else print a 0 indicating empty space
+ else {
+ cout << 0;
+ }
+ }
+ cout << endl;
+ }
+ cout << endl;
+ // after printing, we must backtrack
+ goto backtrack;
+ return 0;
+}
