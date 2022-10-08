@@ -1,2 +1,2 @@
 # C++ Projects
-This includes a variety of projects I have completed during my C++ course.
+This includes projects I have completed during my C++ course.
