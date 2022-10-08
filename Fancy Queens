@@ -1,0 +1,112 @@
+//Prints solutions of chessboard when placing 8 queens, imitating a chessboard
+#include <iostream>
+#include <cmath>
+using namespace std;
+// The rest of the code necessary for this project can be taken from the 1D 8 Queens project
+void print(int q[]) {
+ int i, j, r, c;
+ // define what a box is
+ typedef char box[5][7];
+ box bb, wb, *board[8][8];
+ // bb = black boxes and wb = white boxes that are 5x7 2d character arrays
+ // board is 8x8 array of pointers to boxes
+ for ( i = 0; i < 5; i++) {
+ for ( j = 0; j < 7; j++) {
+ bb[i][j] = ' ';
+ wb[i][j] = char(219);
+ }
+ }
+ // initialize the black and white queens with designs of your choosing
+ static box bq = {{char(219),char(219),char(219),char(219),char(219),char(219),char(219)},
+ {char(219),' ',char(219),' ',char(219),' ',char(219)},
+ {char(219),' ',char(219),' ',char(219),' ',char(219)},
+ {char(219),' ',char(219),' ',char(219),' ',char(219)},
+ {char(219),' ',char(219),' ',char(219),' ',char(219)}};
+ static box wq = {{' ',' ',' ',' ',' ',' ',' '},
+ {' ',char(219),' ',char(219),' ',char(219),' '},
+ {' ',char(219),' ',char(219),' ',char(219),' '},
+ {' ',char(219),' ',char(219),' ',char(219),' '},
+ {' ',char(219),' ',char(219),' ',char(219),' '}};
+
+ //fill the board with black and white boxes, creating an empty chess board
+ for (i = 0; i < 8; i++) {
+ for (j = 0; j < 8; j++) {
+ if ((i + j)%2 == 0) {
+ board[i][j] = &wb; // the address of the appropriate box
+ }
+ else {
+ board[i][j] = &bb;
+ }
+ }
+ }
+ // placing the black and white queens on the board
+ for (i = 0; i < 8; i++) {
+ for ( j = 0; j < 8; j++) {
+ if (i == q[j]) {
+ if (i + j % 2 == 0) {// assign the address of a black queen to the box pointer array
+ board[i][j] = &bq;
+ }
+ else{ // assign the address of a white queen
+ board[i][j] = &wq;
+ }
+ }
+ }
+ }
+ static int solution=0;
+ cout << "Solution #" << ++solution << ":\n ";
+ //upper board
+ for(i = 0; i<8;i++)
+ cout <<'_';
+ cout << endl;
+
+ // print the board
+ // note: we must print the first row of each in the first row of the board
+ // before moving onto the next row
+ for(int i = 0; i < 8; i++){ // the board rows
+ for(int r = 0; r < 5; r++){// box rows
+ cout << char(179);
+ for(int j = 0; j < 8; j++){// board columns
+ for(int c = 0; c < 7; c++){// box columns
+ cout << (*board[i][j])[r][c];
+ }
+ }
+ cout << char(179) << endl;
+ }
+ }
+ //lower board
+ cout << " ";
+ for(i = 0; i < 7*8; i++)
+ cout<<char(196);
+ cout<< endl;
+ }
+int main() {
+ int q[8], c = 0; // begin at column 0
+ int solutions = 0; // we have not yet found any solutions
+//put the queen in the upper left square
+ q[0] = 0; //b[0][0] = 1 in 2D version
+nc: c++;
+// if we reach column 8, we have a solution (i.e. print)
+ if(c == 8) goto print;
+ q[c] = -1;
+nr: q[c]++;
+// if we reach row 8, we must backtrack
+ if(q[c] == 8) goto backtrack;
+// include row and diagonal tests here
+// this can be done with seperate loops or one for loop
+ for (int i = 0; i < c; i++){
+ if(q[i] == q[c] || (c - i) == abs(q[c]- q[i])) goto nr;
+ }
+// if we pass our tests, we can move to the next column
+goto nc;
+ backtrack:
+ c--;
+// check to see if we've reached column -1
+ if(c == -1) return 0;
+// if we have, we found all solutions
+// if we still have solutions to find, go to the next row
+ goto nr;
+print: print(q);
+ goto backtrack;
+
+ return 0;
+}
