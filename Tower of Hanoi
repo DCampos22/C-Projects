@@ -1,0 +1,79 @@
+//Using the push and pop method that show how many ways to get to the other towers while pushing/popping rings
+#include <iostream>
+#include <vector>
+using namespace std;
+
+void odd_move(vector<int> t[], int &to, int &from);
+void even_move(vector<int> t[], int &to, int &from);
+
+int main(){
+    //three towers, three vectors
+    vector<int> t[3];
+    //candidate is th smallest ring that hasn't just been moved
+    int rings, candidate = 1, to, from = 0, move = 0;
+    //get user input for the number of rings
+    cout << "Please enter a number of rings to move: ";
+    cin >> rings;
+    cout << endl;
+
+    for(int i = rings + 1; i > 0; i--)
+        t[0].push_back(i);
+    t[1].push_back(rings+1);
+    t[2].push_back(rings+1);
+
+    bool isOdd;
+    if(rings % 2 == 1){
+        //we have an odd number of rings
+        isOdd = true;
+        to = 1;
+    }
+    else{
+        isOdd = false;
+        to = 2;
+    }
+    while(t[1].size() < (rings + 1)){
+                                                                                      
+        t[to].push_back(t[from].back());
+        //push top of "from" tower to the "to" tower
+        t[from].pop_back();
+        //remove the ring from the "from" tower
+        cout << "move number " << ++move << ": Transfer ring " << candidate << " from tower " << char(from + 65) << " to tower   " << char(to + 65) << endl;        
+        //char(from +65)= tower A
+        //char(to + 65)= tower B
+        if(isOdd) odd_move(t, to, from);
+        else even_move(t, to, from);
+
+        //candidate is just the last element in the from tower
+        candidate = (t[from].back());
+    }
+    return 0;
+}
+
+void odd_move(vector<int> t[], int &to, int &from){
+    //get next "from tower"
+    if(t[(to+1)%3].back() < t[(to+2)%3].back())
+    //to go backward
+        from=(to+1)%3;
+        //odd number of rings
+    else
+        from=(to+2)%3;
+    // get next “to tower”
+    if(t[(from)].back() < t[(from+1)%3].back())
+        to=(from+1)%3;
+    else
+        to=(from+2)%3;
+}
+void even_move(vector<int> t[], int &to, int &from){
+    //get next "from tower"
+    if(t[(to+1)%3].back() < t[(to+2)%3].back())
+    //to go backward
+        from=(to+1)%3;
+        //even number of rings
+    else
+        from=(to+2)%3;
+    // get next “to tower”
+    if(t[(from)].back() < t[(from+2)%3].back())
+        to=(from+2)%3;
+    else
+        to=(from+1)%3;
+}
