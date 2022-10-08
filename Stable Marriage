@@ -1,0 +1,81 @@
+#include <iostream>
+using namespace std;
+
+void print(int matches[], int c);
+void nextMan(int matches[], int &c);
+void nextWoman(int matches[], int &c);
+bool isStable(int matches[], int c);
+void backtrack(int matches[], int &c);
+
+void print(int matches[], int c){
+ static int solutions = 0;
+ cout << "Solution " << ++solutions << endl;
+ cout << "Man" << "  " << "Woman" << endl;
+ //print pairings
+ for(int i = 0; i < 3; i++){
+ cout << i << "     " << matches[i] << endl;
+ }
+ cout << endl;
+ backtrack(matches, c);
+}
+void nextMan(int matches[], int &c){
+ c++;
+ if(c == 3){
+ print(matches, c);
+ }
+ nextWoman(matches, c);
+}
+void nextWoman(int matches[], int &c){
+ matches[c]++;
+ if(matches[c] == 3){
+ //if exceeds a number then reset to 0
+ matches[c] = -1;
+ backtrack(matches, c);
+ }
+ else if(isStable(matches, c)){
+ //if the value we are trying to place in square c is valid
+ nextMan(matches, c);
+ }
+ else{
+ //we need to try a new value in square c (i.e. go to the next row)
+ nextWoman(matches, c);
+ }
+}
+bool isStable(int matches[], int c){
+ //row test
+ for(int i = 0; i < c; i++) //make sure the woman is not aleady married
+ if(matches[i] == matches[c]) return false;
+ static int mp[3][3] = {
+ {0, 2, 1}, // man 0 preferences
+ {0, 2, 1},
+ {1, 2, 0}};
+ static int wp[3][3] = {
+ {2, 1, 0}, //woman 0
+ {0, 1, 2},
+ {2, 0 , 1}};
+ int nm = c; // newMan
+ int nw = matches[nm];
+ matches[nm] = nw; //newWoman
+ for(int pm = 0; pm < nm; pm++){
+ int pw = matches[pm];
+ if ((mp[pm][nw] < mp[pm][pw]) && (wp[nw][pm] < wp[nw][nm])) return false;
+ if ((mp[nm][pw] < mp[nm][nw]) && (wp[pw][nm] < wp[pw][pm])) return false;
+ //if we pass all tests
+ }
+ return true;
+ }
+void backtrack(int matches[], int &c){
+ c--;
+ // check to see if we've reached column -1
+ if(c == -1){
+ return;
+ }
+ //we have backtracked into the non-existent column -1 which
+ //means we've found all solutions and can terminate the program
+
+ nextWoman(matches, c);
+}
+int main(){
+ int matches[3]={}, c = 0;
+ nextMan(matches, c);
+}
